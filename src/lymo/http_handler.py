@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from lymo.router import match_route
 from lymo.http_requests import HttpRequest
-from lymo.http_responses import TemplateResponse
+from lymo.http_responses import HttpResponse
 
 
 if TYPE_CHECKING:
@@ -42,10 +42,9 @@ def http_handler(
             request.path_params = params
             return handler(request)
 
-        return TemplateResponse(
+        return HttpResponse(
             request=request,
-            template="404.html",
-            context={},
+            body="NOT FOUND",
             status_code=404,
         )
 
@@ -53,9 +52,8 @@ def http_handler(
         if app.logger:
             app.logger.error(f"Error in lambda_handler: {e}")
         trace = traceback.format_exc()
-        return TemplateResponse(
+        return HttpResponse(
             request=request,
-            template="500.html",
-            context={"error": e, "traceback": trace},
-            status_code=404,
+            body={"error": str(e), "traceback": str(trace)},
+            status_code=500,
         )

@@ -11,8 +11,9 @@ def default_serializer(obj):
         return str(obj)
     if isinstance(obj, Decimal):
         return float(obj)
+    if hasattr(obj, 'model_dump') and callable(obj.model_dump):
+        return obj.model_dump()
     return str(obj)
-
 
 def dumps(data, *, indent=None, sort_keys=False):
     return json.dumps(
