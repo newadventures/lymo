@@ -53,7 +53,7 @@ class JsonResponse(HttpResponse):
         self,
         *,
         request: HttpRequest,
-        data: dict,
+        data: dict | list[dict],
         status_code: int = 200,
         headers: dict[str, str] | None = None,
     ):
