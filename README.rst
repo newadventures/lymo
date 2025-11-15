@@ -374,9 +374,9 @@ All query methods have async equivalents:
         user = await User.objects.using(conn).find(id=123).aget()
         count = await User.objects.using(conn).acount()
 
----------
+----------
 Templating
----------
+----------
 
 When ``template_dir`` is provided, Lymo configures Jinja2 with:
 
