@@ -272,6 +272,38 @@ Pass database connections explicitly using ``.using(conn)``:
         user = User.objects.using(db).find(id=user_id).get()
         return JsonResponse(request=request, data=user.model_dump())
 
+AWS DSQL Support
+================
+
+Lymo includes built-in support for AWS DSQL (Aurora DSQL) connections with IAM authentication:
+
+.. code-block:: python
+
+    from lymo.dsql import create_dsql_connection
+
+    # Create DSQL connection with IAM auth
+    conn = create_dsql_connection(
+        cluster_identifier="my-cluster",
+        region="us-east-1",
+        cluster_user="admin",  # Optional, defaults to "admin"
+        schema="public",       # Optional, defaults to "public"
+        expires_in=3600        # Optional, token TTL in seconds
+    )
+
+    app = App(
+        routes=routes,
+        resources={"db": conn}
+    )
+
+The DSQL connection helper:
+
+* Automatically generates IAM authentication tokens via boto3
+* Configures SSL/TLS with the correct settings for DSQL
+* Sets the PostgreSQL search_path to your specified schema
+* Supports psycopg 3.x with optimized SSL negotiation for newer versions
+
+**Note:** The connection token expires after ``expires_in`` seconds (default: 3600). For long-running Lambda containers, consider implementing connection refresh logic or using shorter expiration times.
+
 Query API
 =========
 
