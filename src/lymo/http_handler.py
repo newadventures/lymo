@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from aws_lambda_typing.context import Context
     from aws_lambda_typing.events import APIGatewayProxyEventV1
     from lymo.http_responses import HttpResponse
-    from lymo.app import App
+    from lymo import App
 
 
 def strip_base_path(resource: str, path: str) -> str:

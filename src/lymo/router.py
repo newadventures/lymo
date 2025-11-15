@@ -19,7 +19,7 @@ def route(path_pattern: str, method: str, cache_ttl: int | None = None):
                    Only applies to safe methods (GET, HEAD, OPTIONS)
 
     Example:
-        @route("/quotes/", "GET", cache_ttl=300)  # 5 minute cache
+        @route("/quotes/", "GET", cache_ttl=300)
 
     Note:
         cache_ttl is ignored for unsafe methods (POST, PUT, PATCH, DELETE)
@@ -27,18 +27,14 @@ def route(path_pattern: str, method: str, cache_ttl: int | None = None):
     """
     method = method.upper()
     normalized_pattern = path_pattern.strip("/")
-
-    # Only cache safe/idempotent methods
     CACHEABLE_METHODS = {'GET', 'HEAD', 'OPTIONS'}
 
     def wrapper(func):
         regex = re.sub(r"{(\w+)}", r"(?P<\1>[^/]+)", normalized_pattern)
 
-        # Wrap the handler to add cache headers if specified
         def cached_handler(*args, **kwargs):
             response = func(*args, **kwargs)
 
-            # Add Cache-Control header only for safe methods
             if cache_ttl is not None and method in CACHEABLE_METHODS and isinstance(response, dict):
                 if 'headers' not in response:
                     response['headers'] = {}
