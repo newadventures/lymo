@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import boto3
 import psycopg
-from psycopg import pq
+from psycopg import pq, sql
 
 
 def create_dsql_connection(
@@ -37,7 +37,7 @@ def create_dsql_connection(
     conn = psycopg.connect(**conn_params)
     try:
         with conn.cursor() as cur:
-            cur.execute("SET search_path = %s;", (schema,))
+            cur.execute(sql.SQL("SET search_path = {};").format(sql.Identifier(schema)))
     except Exception:
         conn.close()
         raise
